@@ -1,14 +1,17 @@
 import java.io.File
 
+fun run(path: String, solution: Sequence<String>.() -> Int) = File(path).useLines {
+  println("$path $solution: ${it.solution()}")
+}
+
 fun day01() {
   fun increases(items: Pair<Int, Int>) = if (items.second > items.first) 1 else 0
-  fun Sequence<Int>.q1() = zipWithNext().map(::increases).sum()
-  fun Sequence<Int>.q2() = windowed(3).map(Iterable<Int>::sum).q1()
-  fun run(q: Sequence<Int>.() -> Int) = File("day1input.txt").useLines {
-    println("day01 $q: ${it.map(String::toInt).q()}")
-  }
-  run(Sequence<Int>::q1)
-  run(Sequence<Int>::q2)
+  fun Sequence<Int>.countIncreases() = zipWithNext().map(::increases).sum()
+  fun Sequence<String>.q1() = map(String::toInt).countIncreases()
+  fun Sequence<String>.q2() = map(String::toInt).windowed(3).map(Iterable<Int>::sum).countIncreases()
+
+  run("day1input.txt", Sequence<String>::q1)
+  run("day1input.txt", Sequence<String>::q2)
 }
 
 fun day02() {
@@ -33,10 +36,8 @@ fun day02() {
   }
   fun Sequence<String>.q2() = fold(Triple(0, 0, 0), Triple<Int, Int, Int>::accumulateAimAndPosition).product()
 
-  fun run(q: Sequence<String>.() -> Int) = File("day2input.txt").useLines { println("day02 $q: ${it.q()}") }
-
-  run(Sequence<String>::q1)
-  run(Sequence<String>::q2)
+  run("day2input.txt", Sequence<String>::q1)
+  run("day2input.txt", Sequence<String>::q2)
 }
 
 fun main(args: Array<String>) {
